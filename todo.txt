@@ -1,0 +1,8 @@
+om deze functionaliteit te bouwen met drush:
+
+project uitchecken via git (github?)
+php user sudo rechten geven zonder paswoord
+
+via een ajax call drush uitvoeren zodat er een throbber getoond kan worden
+
+als de drush gelukt is de url terugsturen zodat daarop geklikt kan worden en ineens naar die site kan gegaan worden.
