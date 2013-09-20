@@ -1,8 +1,22 @@
 om deze functionaliteit te bouwen met drush:
+-----------------------------------------------
 
 project uitchecken via git (github?)
 php user sudo rechten geven zonder paswoord
+dit gaat problemen geven aangezien php natuurlijk niet eerst het paswoord mag aanpassen...
+misschien beter een cron run en een record in de db om dit te doen...
+
 
 via een ajax call drush uitvoeren zodat er een throbber getoond kan worden
 
 als de drush gelukt is de url terugsturen zodat daarop geklikt kan worden en ineens naar die site kan gegaan worden.
+
+
+
+
+
+De online databank downloaden
+-------------------------------
+
+in de default backupmigrate destination gaan kijken, en daar de db halen?
+De download zelf triggeren, al weet ik niet hoe dat moet...

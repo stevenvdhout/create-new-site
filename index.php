@@ -2,17 +2,30 @@
 /**
  * @todo make the variables safe for exec!!!
  */
+define('DOWNLOAD_PATH', 'db/');
+
+  $cns = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
   $bookmarklet = TRUE;
-  if (count($_GET)) $bookmarklet = FALSE;
+  if (count($_POST) || isset($_GET['ref'])) $bookmarklet = FALSE;
 
   $ref = (isset($_GET['ref']) ? $_GET['ref'] : '');
-  $post = (isset($_GET['post']) ? $_GET['post'] : '');
-  $sitename = (isset($_GET['sitename']) ? $_GET['sitename'] : '');
-  $repo = (isset($_GET['repo']) ? $_GET['repo'] : 'dgit');
-  $reponame = (isset($_GET['reponame']) ? $_GET['reponame'] : '');
-  $version = (isset($_GET['version']) ? $_GET['version'] : '7');
-  $url = (isset($_GET['url']) ? $_GET['url'] : '');
-  $db = (isset($_GET['db']) ? $_GET['db'] : '');
+  $post = (isset($_POST['post']) ? $_POST['post'] : '');
+  $sitename = (isset($_POST['sitename']) ? $_POST['sitename'] : '');
+  $repo = (isset($_POST['repo']) ? $_POST['repo'] : 'dgit');
+  $reponame = (isset($_POST['reponame']) ? $_POST['reponame'] : '');
+  $version = (isset($_POST['version']) ? $_POST['version'] : '7');
+  $url = (isset($_POST['url']) ? $_POST['url'] : '');
+  $db = (isset($_POST['db']) ? $_POST['db'] : '');
+  $dbfile = (isset($_POST['dbfile']) ? $_POST['dbfile'] : '');
+  if ($_FILES) {
+    $ext = pathinfo($_FILES['dbfile']['name'], PATHINFO_EXTENSION);
+    $new_filename = "$sitename-" . date('Y-m-d-H-i') . ".$ext";
+    $target_path = DOWNLOAD_PATH . $new_filename;
+    if(move_uploaded_file($_FILES['dbfile']['tmp_name'], $target_path)) {
+      $dbfilepath = $_SERVER['DOCUMENT_ROOT'] . "/$target_path";
+    }
+  }
 
 
   if ($ref) {
@@ -32,6 +45,7 @@
     if ($db) {
       $drush .= " --newdb=$db";
       if ($version) $drush .= " --cs=$version";
+      if ($dbfilepath) $drush .= " --dbpath=" . $dbfilepath;
     }
     if ($reponame) {
       if ($repo == 'git') $drush .= " --git=$reponame";
@@ -47,6 +61,7 @@
 	<meta charset="utf-8">
 
 	<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
+  <script src="js/bootstrap-filestyle.min.js" type="text/javascript"></script>
 
 	<link type="text/css" rel="stylesheet" media="all" href="css/bootstrap.css">
 	<link type="text/css" rel="stylesheet" media="all" href="css/style.css">
@@ -59,24 +74,7 @@
 	<div id="wrapper">
 		<h1>Create New Site</h1>
 		<?php if($bookmarklet): ?>
-			<div id='bookmarklet'>
-				<?php $cns = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>
-
-				<a id="icon" href="javascript:
-        (function () {
-            var jsCode1 = document.createElement('script');jsCode1.innerHTML = '
-            var ajaxpath = \'http://<?php echo $cns; ?>?callback=true\';';
-            document.body.appendChild(jsCode1);
-            var jsCode = document.createElement('script');
-            jsCode.setAttribute('src', 'http://<?php echo $cns; ?>/js/bookmarklet.js');
-            document.body.appendChild(jsCode);}()
-          );
-        "
-        >
-					+ CNS
-				</a>
-				<h2>Drag this icon to your bookmarks bar</h2>
-			</div>
+			<?php include 'bookmarklet.php'; ?>
 		<?php endif; ?>
 
     <?php if (isset($drush)): ?>
@@ -86,5 +84,8 @@
 		<?php endif; ?>
 
 	</div>
+  <script>
+    //$(".filestyle").filestyle({input: false});
+  </script>
 </body>
 </html>

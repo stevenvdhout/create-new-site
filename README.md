@@ -1,4 +1,4 @@
 create-new-site
 ===============
 
-A UI build upon our drush cns extensions
+Add a UI (bookmarklet) to build the drush commands for 'cns'
